@@ -1,16 +1,17 @@
 package org.androidappdev.radiozero;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
-
 
 
 public class MainActivity extends ActionBarActivity {
@@ -49,16 +50,46 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
+
+        private View mFacebookLink;
 
         public PlaceholderFragment() {
         }
 
+        /**
+         * Open given url in Facebook app or browser if app is not installed.
+         *
+         * @param url url to be opened
+         * @return an intent to open give url
+         */
+        private static Intent getOpenInFacebookIntent(Context context, String url) {
+            Intent resultIntent = new Intent(Intent.ACTION_VIEW);
+            try {
+                context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
+                resultIntent.setData(Uri.parse("fb://facewebmodal/f?href=" + url));
+            } catch (PackageManager.NameNotFoundException e) {
+                resultIntent.setData(Uri.parse(url));
+            }
+            return resultIntent;
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            mFacebookLink = rootView.findViewById(R.id.facebook_link);
+            mFacebookLink.setOnClickListener(this);
             return rootView;
         }
+
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == R.id.facebook_link) {
+                startActivity(getOpenInFacebookIntent(
+                        getActivity(), "http://www.facebook.com/radiozero"));
+            }
+        }
+
     }
 }
