@@ -3,15 +3,20 @@ package org.androidappdev.radiozero;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.io.IOException;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -50,7 +55,10 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
+    public static class PlaceholderFragment extends Fragment implements View.OnClickListener, MediaPlayer.OnPreparedListener {
+
+        private static final String LOG_TAG = PlaceholderFragment.class.getSimpleName();
+        private MediaPlayer mMediaPlayer;
 
         public PlaceholderFragment() {
         }
@@ -86,6 +94,31 @@ public class MainActivity extends ActionBarActivity {
         }
 
         @Override
+        public void onStart() {
+            super.onStart();
+            try {
+                String url = "http://stream.radiozero.pt:8000/zero64.mp3";
+                mMediaPlayer = new MediaPlayer();
+                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mMediaPlayer.setDataSource(url);
+                mMediaPlayer.setOnPreparedListener(this);
+                mMediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                Log.e(LOG_TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onStop() {
+            if (mMediaPlayer != null) {
+                mMediaPlayer.release();
+                mMediaPlayer = null;
+            }
+            super.onStop();
+        }
+
+        @Override
         public void onClick(View view) {
             int id = view.getId();
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -107,5 +140,9 @@ public class MainActivity extends ActionBarActivity {
             startActivity(intent);
         }
 
+        @Override
+        public void onPrepared(MediaPlayer mediaPlayer) {
+            mediaPlayer.start();
+        }
     }
 }
