@@ -52,8 +52,6 @@ public class MainActivity extends ActionBarActivity {
      */
     public static class PlaceholderFragment extends Fragment implements View.OnClickListener {
 
-        private View mFacebookLink;
-
         public PlaceholderFragment() {
         }
 
@@ -78,17 +76,35 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            mFacebookLink = rootView.findViewById(R.id.facebook_link);
-            mFacebookLink.setOnClickListener(this);
+
+            rootView.findViewById(R.id.facebook_link).setOnClickListener(this);
+            rootView.findViewById(R.id.google_plus_link).setOnClickListener(this);
+            rootView.findViewById(R.id.flickr_link).setOnClickListener(this);
+            rootView.findViewById(R.id.radialx_link).setOnClickListener(this);
+
             return rootView;
         }
 
         @Override
         public void onClick(View view) {
-            if (view.getId() == R.id.facebook_link) {
-                startActivity(getOpenInFacebookIntent(
-                        getActivity(), "http://www.facebook.com/radiozero"));
+            int id = view.getId();
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            switch (id) {
+                case R.id.facebook_link:
+                    intent = getOpenInFacebookIntent(
+                            getActivity(), "http://www.facebook.com/radiozero");
+                    break;
+                case R.id.google_plus_link:
+                    intent.setData(Uri.parse("https://plus.google.com/113155695079240313645"));
+                    break;
+                case R.id.flickr_link:
+                    intent.setData(Uri.parse("http://flickr.com/radiozero"));
+                    break;
+                case R.id.radialx_link:
+                    intent.setData(Uri.parse("http://radialx.radiozero.pt"));
+                    break;
             }
+            startActivity(intent);
         }
 
     }
