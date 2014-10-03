@@ -1,9 +1,11 @@
 package org.androidappdev.radiozero;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -44,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         } else if (id == R.id.action_about) {
             startActivity(new Intent(this, AboutActivity.class));
@@ -72,8 +75,14 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onStart() {
             super.onStart();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String quality = prefs.getString(SettingsActivity.KEY_PREF_QUALITY, "1");
+
+            String url = SettingsActivity.PREF_HIGH_QUALITY.equals(quality)
+                    ? "http://stream.radiozero.pt:8000/zero128.mp3"
+                    : "http://stream.radiozero.pt:8000/zero64.mp3";
+
             try {
-                String url = "http://stream.radiozero.pt:8000/zero64.mp3";
                 mMediaPlayer = new MediaPlayer();
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 mMediaPlayer.setDataSource(url);
