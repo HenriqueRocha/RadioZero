@@ -1,12 +1,18 @@
 package org.androidappdev.radiozero;
 
+import android.accounts.Account;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,23 +20,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.androidappdev.radiozero.data.RadioZeroContract;
+import org.androidappdev.radiozero.sync.SyncAdapter;
 
 import java.io.IOException;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    private Account mAccount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAccount = SyncAdapter.getSyncAccount(this);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -58,10 +72,12 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements MediaPlayer.OnPreparedListener {
+    public static class PlaceholderFragment extends Fragment implements
+            MediaPlayer.OnPreparedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
         private static final String LOG_TAG = PlaceholderFragment.class.getSimpleName();
         private MediaPlayer mMediaPlayer;
+        private TextView mTextView;
 
         public PlaceholderFragment() {
         }
@@ -69,7 +85,9 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_main, container, false);
+            View view = inflater.inflate(R.layout.fragment_main, container, false);
+            mTextView = (TextView) view.findViewById(R.id.rssfeed_textview);
+            return view;
         }
 
         @Override
@@ -87,11 +105,20 @@ public class MainActivity extends ActionBarActivity {
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 mMediaPlayer.setDataSource(url);
                 mMediaPlayer.setOnPreparedListener(this);
-                mMediaPlayer.prepareAsync();
+//                mMediaPlayer.prepareAsync();
+
             } catch (IOException e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            // Prepare the loader.  Either re-connect with an existing one,
+            // or start a new one.
+            getLoaderManager().initLoader(0, null, this);
         }
 
         @Override
@@ -107,5 +134,31 @@ public class MainActivity extends ActionBarActivity {
         public void onPrepared(MediaPlayer mediaPlayer) {
             mediaPlayer.start();
         }
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+            return new CursorLoader(
+                    getActivity(),
+                    RadioZeroContract.BlogEntry.CONTENT_URI,
+                    new String[]{RadioZeroContract.BlogEntry.COLUMN_XML},
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(RadioZeroContract.BlogEntry.COLUMN_XML);
+                mTextView.setText(cursor.getString(columnIndex));
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> cursorLoader) {
+            // Nothing to do.
+        }
     }
+
 }
