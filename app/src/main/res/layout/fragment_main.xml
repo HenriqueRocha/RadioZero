@@ -9,31 +9,4 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$PlaceholderFragment">
 
-    <TextView
-        android:id="@+id/facebook_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:text="@string/facebook" />
-
-    <TextView
-        android:id="@+id/google_plus_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:text="@string/google_plus" />
-
-    <TextView
-        android:id="@+id/flickr_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:text="@string/flickr" />
-
-    <TextView
-        android:id="@+id/radialx_link"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:text="@string/radialx" />
 </LinearLayout>

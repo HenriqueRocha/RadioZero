@@ -1,11 +1,8 @@
 package org.androidappdev.radiozero;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -48,6 +45,9 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_about) {
+            startActivity(new Intent(this, AboutActivity.class));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment implements View.OnClickListener, MediaPlayer.OnPreparedListener {
+    public static class PlaceholderFragment extends Fragment implements MediaPlayer.OnPreparedListener {
 
         private static final String LOG_TAG = PlaceholderFragment.class.getSimpleName();
         private MediaPlayer mMediaPlayer;
@@ -63,34 +63,10 @@ public class MainActivity extends ActionBarActivity {
         public PlaceholderFragment() {
         }
 
-        /**
-         * Open given url in Facebook app or browser if app is not installed.
-         *
-         * @param url url to be opened
-         * @return an intent to open give url
-         */
-        private static Intent getOpenInFacebookIntent(Context context, String url) {
-            Intent resultIntent = new Intent(Intent.ACTION_VIEW);
-            try {
-                context.getPackageManager().getPackageInfo("com.facebook.katana", 0);
-                resultIntent.setData(Uri.parse("fb://facewebmodal/f?href=" + url));
-            } catch (PackageManager.NameNotFoundException e) {
-                resultIntent.setData(Uri.parse(url));
-            }
-            return resultIntent;
-        }
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-            rootView.findViewById(R.id.facebook_link).setOnClickListener(this);
-            rootView.findViewById(R.id.google_plus_link).setOnClickListener(this);
-            rootView.findViewById(R.id.flickr_link).setOnClickListener(this);
-            rootView.findViewById(R.id.radialx_link).setOnClickListener(this);
-
-            return rootView;
+            return inflater.inflate(R.layout.fragment_main, container, false);
         }
 
         @Override
@@ -116,28 +92,6 @@ public class MainActivity extends ActionBarActivity {
                 mMediaPlayer = null;
             }
             super.onStop();
-        }
-
-        @Override
-        public void onClick(View view) {
-            int id = view.getId();
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            switch (id) {
-                case R.id.facebook_link:
-                    intent = getOpenInFacebookIntent(
-                            getActivity(), "http://www.facebook.com/radiozero");
-                    break;
-                case R.id.google_plus_link:
-                    intent.setData(Uri.parse("https://plus.google.com/113155695079240313645"));
-                    break;
-                case R.id.flickr_link:
-                    intent.setData(Uri.parse("http://flickr.com/radiozero"));
-                    break;
-                case R.id.radialx_link:
-                    intent.setData(Uri.parse("http://radialx.radiozero.pt"));
-                    break;
-            }
-            startActivity(intent);
         }
 
         @Override
