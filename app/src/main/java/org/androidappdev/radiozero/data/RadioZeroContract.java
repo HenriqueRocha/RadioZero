@@ -27,12 +27,14 @@ public class RadioZeroContract {
     public static final String PATH_BLOG = "blog_entries";
 
     public interface BlogEntry extends BaseColumns {
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_BLOG).build();
+        Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BLOG).build();
+
         String TABLE_NAME = "blog_entries";
-        public static final String CONTENT_TYPE =
-                "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_BLOG;
-        String COLUMN_XML = "xml";
+        String COLUMN_TITLE = "title";
+        String CONTENT_TYPE = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_BLOG;
+        String COLUMN_LINK = "link";
+        String COLUMN_PUBDATE = "pubDate";
+        String COLUMN_DESCRIPTION = "description";
 
     }
 }

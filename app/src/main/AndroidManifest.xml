@@ -42,17 +42,18 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
-
         <service
             android:name="org.androidappdev.radiozero.sync.SyncService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
@@ -63,6 +64,15 @@
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true" />
+
+        <activity
+            android:name="org.androidappdev.radiozero.BlogEntryActivity"
+            android:label="@string/title_activity_blog_entry"
+            android:parentActivityName="org.androidappdev.radiozero.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.androidappdev.radiozero.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

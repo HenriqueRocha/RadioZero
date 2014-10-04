@@ -7,12 +7,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import org.androidappdev.radiozero.data.RadioZeroContract.BlogEntry;
 
 /**
- * Created by hmrocha on 10/3/14.
+ * @author Henrique Rocha
  */
 public class RadioZeroDbHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "radiozero.db";
-    // If you change the database schema, you must increment the database version.
+
     private static final int DATABASE_VERSION = 1;
 
     public RadioZeroDbHelper(Context context) {
@@ -21,10 +21,14 @@ public class RadioZeroDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        // Create a table to hold locations.  A location consists of the string supplied in the
-        // location setting, the city name, and the latitude and longitude
+
         final String SQL_CREATE_BLOG_TABLE = "CREATE TABLE " + BlogEntry.TABLE_NAME + " (" +
-                BlogEntry.COLUMN_XML + " TEXT);";
+                BlogEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                BlogEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
+                BlogEntry.COLUMN_LINK + " TEXT NOT NULL, " +
+                BlogEntry.COLUMN_PUBDATE + " TEXT NOT NULL, " +
+                BlogEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL);";
+
         sqLiteDatabase.execSQL(SQL_CREATE_BLOG_TABLE);
     }
 

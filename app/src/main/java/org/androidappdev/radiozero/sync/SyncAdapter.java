@@ -18,9 +18,12 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import org.androidappdev.radiozero.R;
+import org.androidappdev.radiozero.RadioZeroXmlParser;
 import org.androidappdev.radiozero.data.RadioZeroContract.BlogEntry;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by hmrocha on 10/3/14.
@@ -137,6 +140,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //        }
     }
 
+    public static void initializeSyncAdapter(Context context) {
+        getSyncAccount(context);
+    }
+
     @Override
     public void onPerformSync(
             Account account,
@@ -147,15 +154,35 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             OkHttpClient client = new OkHttpClient();
-
             Request request = new Request.Builder()
                     .url("http://www.radiozero.pt/feed/")
                     .build();
             Response response = client.newCall(request).execute();
-            String xml = response.body().string();
-            ContentValues values = new ContentValues();
-            values.put(BlogEntry.COLUMN_XML, xml);
-            contentProviderClient.insert(BlogEntry.CONTENT_URI, values);
+            RadioZeroXmlParser parser = new RadioZeroXmlParser();
+            List<RadioZeroXmlParser.Item> items = parser.parse(response.body().byteStream());
+            response.body().byteStream().close();
+            Log.d(LOG_TAG, "items: " + items.size());
+            contentProviderClient.delete(BlogEntry.CONTENT_URI, null, null);
+
+            ContentValues[] values = new ContentValues[items.size()];
+            int i = 0;
+            for (RadioZeroXmlParser.Item item : items) {
+                values[i] = new ContentValues();
+                values[i].put(BlogEntry.COLUMN_TITLE, item.title);
+                values[i].put(BlogEntry.COLUMN_LINK, item.link);
+                values[i].put(BlogEntry.COLUMN_PUBDATE, item.pubDate);
+                values[i].put(BlogEntry.COLUMN_DESCRIPTION, item.description);
+                contentProviderClient.insert(BlogEntry.CONTENT_URI, values[i]);
+                i++;
+            }
+
+            // We don't need old cached values.
+//            contentProviderClient.delete(BlogEntry.CONTENT_URI, null, null);
+
+//            contentProviderClient.bulkInsert(BlogEntry.CONTENT_URI, values);
+        } catch (XmlPullParserException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
         } catch (RemoteException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
@@ -164,5 +191,4 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             e.printStackTrace();
         }
     }
-
 }
