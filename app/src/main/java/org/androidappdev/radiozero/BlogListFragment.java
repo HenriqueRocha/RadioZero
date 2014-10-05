@@ -1,31 +1,25 @@
 package org.androidappdev.radiozero;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.database.Cursor;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
 import org.androidappdev.radiozero.data.RadioZeroContract.BlogEntry;
 
-import java.io.IOException;
-
 /**
  * A placeholder fragment containing a simple view.
  */
 public class BlogListFragment extends ListFragment implements
-        MediaPlayer.OnPreparedListener, LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = BlogListFragment.class.getSimpleName();
     private final String[] PROJECTION = {
@@ -47,7 +41,6 @@ public class BlogListFragment extends ListFragment implements
             R.id.list_item_pubdate_textview,
             R.id.list_item_description_textview,
     };
-    private MediaPlayer mMediaPlayer;
     private SimpleCursorAdapter mAdapter;
     private Callback mListener;
 
@@ -65,29 +58,6 @@ public class BlogListFragment extends ListFragment implements
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String quality = prefs.getString(SettingsActivity.KEY_PREF_QUALITY, "1");
-
-        String url = SettingsActivity.PREF_HIGH_QUALITY.equals(quality)
-                ? "http://stream.radiozero.pt:8000/zero128.mp3"
-                : "http://stream.radiozero.pt:8000/zero64.mp3";
-
-        try {
-            mMediaPlayer = new MediaPlayer();
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mMediaPlayer.setDataSource(url);
-            mMediaPlayer.setOnPreparedListener(this);
-//                mMediaPlayer.prepareAsync();
-
-        } catch (IOException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Prepare the loader.  Either re-connect with an existing one, or start a new one.
@@ -98,27 +68,20 @@ public class BlogListFragment extends ListFragment implements
                 FROM,
                 TO,
                 0);
+        getActivity().startService(new Intent(getActivity(), RadioZeroService.class));
         getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
-    public void onStop() {
-        if (mMediaPlayer != null) {
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-        }
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().stopService(new Intent(getActivity(), RadioZeroService.class));
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         mListener.onItemSelected(id);
-    }
-
-    @Override
-    public void onPrepared(MediaPlayer mediaPlayer) {
-        mediaPlayer.start();
     }
 
     @Override

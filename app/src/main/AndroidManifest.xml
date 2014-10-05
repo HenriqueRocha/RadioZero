@@ -38,6 +38,21 @@
                 android:value="org.androidappdev.radiozero.MainActivity" />
         </activity>
 
+        <activity
+            android:name="org.androidappdev.radiozero.BlogEntryActivity"
+            android:label="@string/title_activity_blog_entry"
+            android:parentActivityName="org.androidappdev.radiozero.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.androidappdev.radiozero.MainActivity" />
+        </activity>
+
+        <provider
+            android:name="org.androidappdev.radiozero.data.RadioZeroProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false"
+            android:syncable="true" />
+
         <service android:name="org.androidappdev.radiozero.sync.AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
@@ -59,20 +74,10 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-        <provider
-            android:name="org.androidappdev.radiozero.data.RadioZeroProvider"
-            android:authorities="@string/content_authority"
-            android:exported="false"
-            android:syncable="true" />
+        <service
+            android:name=".RadioZeroService"
+            android:exported="false" />
 
-        <activity
-            android:name="org.androidappdev.radiozero.BlogEntryActivity"
-            android:label="@string/title_activity_blog_entry"
-            android:parentActivityName="org.androidappdev.radiozero.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.androidappdev.radiozero.MainActivity" />
-        </activity>
     </application>
 
 </manifest>
