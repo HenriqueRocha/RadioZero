@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -14,8 +15,9 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="org.androidappdev.radiozero.MainActivity"
-            android:label="@string/app_name">
-            <intent-filter>
+            android:label="@string/app_name"
+            android:launchMode="singleInstance">
+        <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -76,7 +78,11 @@
 
         <service
             android:name=".RadioZeroService"
-            android:exported="false" />
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.androidappdev.radiozero.action.PLAY" />
+            </intent-filter>
+        </service>
 
     </application>
 

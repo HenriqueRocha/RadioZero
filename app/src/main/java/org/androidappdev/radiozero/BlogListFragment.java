@@ -68,7 +68,7 @@ public class BlogListFragment extends ListFragment implements
                 FROM,
                 TO,
                 0);
-        getActivity().startService(new Intent(getActivity(), RadioZeroService.class));
+        getActivity().startService(new Intent(RadioZeroService.ACTION_PLAY));
         getLoaderManager().initLoader(0, null, this);
     }
 
