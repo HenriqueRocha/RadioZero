@@ -51,7 +51,7 @@
 
         <provider
             android:name="org.androidappdev.radiozero.data.RadioZeroProvider"
-            android:authorities="@string/content_authority"
+            android:authorities="org.androidappdev.radiozero"
             android:exported="false"
             android:syncable="true" />
 

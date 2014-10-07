@@ -9,7 +9,8 @@ import android.view.MenuItem;
 import org.androidappdev.radiozero.sync.SyncAdapter;
 
 
-public class MainActivity extends ActionBarActivity implements BlogListFragment.Callback {
+public class MainActivity extends ActionBarActivity
+        implements PlayFragment.OnPlayPressedListener, BlogListFragment.Callback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +19,7 @@ public class MainActivity extends ActionBarActivity implements BlogListFragment.
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new BlogListFragment())
+                    .add(R.id.container, new PlayFragment())
                     .commit();
         }
 
@@ -53,5 +54,10 @@ public class MainActivity extends ActionBarActivity implements BlogListFragment.
         Intent intent = new Intent(this, BlogEntryActivity.class)
                 .putExtra(BlogEntryActivity.ID_KEY, id);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPlayPressed(int action) {
+
     }
 }

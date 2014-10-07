@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="action_settings">Definições</string>
+
+    <string name="title_activity_about">Sobre</string>
+    <string name="action_about">Sobre</string>
+    <!-- SyncAdapter related -->
+    <string name="sync_account_type">radiozero.pt</string>
+    <string name="content_authority">org.androidappdev.radiozero</string>
+    <string name="title_activity_blog_entry">BlogEntryActivity</string>
+
+    <string name="tagline">Dilatação auditiva,\nexpansão mental</string>
+</resources>
