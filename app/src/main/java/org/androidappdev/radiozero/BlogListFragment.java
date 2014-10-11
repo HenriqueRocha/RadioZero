@@ -1,45 +1,50 @@
 package org.androidappdev.radiozero;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.format.DateUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.androidappdev.radiozero.data.RadioZeroContract.BlogEntry;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class BlogListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, SimpleCursorAdapter.ViewBinder {
 
     private static final String LOG_TAG = BlogListFragment.class.getSimpleName();
+
     private final String[] PROJECTION = {
             BlogEntry._ID,
             BlogEntry.COLUMN_TITLE,
-            BlogEntry.COLUMN_LINK,
             BlogEntry.COLUMN_PUBDATE,
-            BlogEntry.COLUMN_DESCRIPTION
+            BlogEntry.COLUMN_IMAGE
     };
     private final String[] FROM = {
             BlogEntry.COLUMN_TITLE,
-            BlogEntry.COLUMN_LINK,
             BlogEntry.COLUMN_PUBDATE,
-            BlogEntry.COLUMN_DESCRIPTION
+            BlogEntry.COLUMN_IMAGE
     };
     private final int[] TO = {
             R.id.list_item_title_textview,
-            R.id.list_item_link_textview,
             R.id.list_item_pubdate_textview,
-            R.id.list_item_description_textview,
+            R.id.list_item_imageview,
     };
     private SimpleCursorAdapter mAdapter;
     private Callback mListener;
@@ -58,8 +63,10 @@ public class BlogListFragment extends ListFragment implements
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getListView().setSelector(R.drawable.radiozero_list_selector_holo_light);
+        getListView().setDrawSelectorOnTop(true);
         // Prepare the loader.  Either re-connect with an existing one, or start a new one.
         mAdapter = new SimpleCursorAdapter(
                 getActivity(),
@@ -68,14 +75,15 @@ public class BlogListFragment extends ListFragment implements
                 FROM,
                 TO,
                 0);
-        getActivity().startService(new Intent(RadioZeroService.ACTION_PLAY));
+        mAdapter.setViewBinder(this);
+//        getActivity().startService(new Intent(RadioZeroService.ACTION_PLAY));
         getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().stopService(new Intent(getActivity(), RadioZeroService.class));
+//        getActivity().stopService(new Intent(getActivity(), RadioZeroService.class));
     }
 
     @Override
@@ -110,6 +118,33 @@ public class BlogListFragment extends ListFragment implements
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+        switch (view.getId()) {
+            case R.id.list_item_imageview:
+                Picasso
+                        .with(getActivity())
+                        .load(cursor.getString(columnIndex))
+                        .fit()
+                        .centerCrop()
+                        .into((ImageView) view);
+                return true;
+            case R.id.list_item_pubdate_textview:
+                String date = cursor.getString(columnIndex);
+                try {
+                    SimpleDateFormat d = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZZ", Locale.getDefault());
+                    ((TextView) view).setText(
+                            DateUtils.getRelativeTimeSpanString(
+                                    getActivity(), d.parse(date).getTime()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**

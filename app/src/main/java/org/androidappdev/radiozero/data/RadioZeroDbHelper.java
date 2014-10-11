@@ -25,9 +25,10 @@ public class RadioZeroDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_BLOG_TABLE = "CREATE TABLE " + BlogEntry.TABLE_NAME + " (" +
                 BlogEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 BlogEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
-                BlogEntry.COLUMN_LINK + " TEXT NOT NULL, " +
+                BlogEntry.COLUMN_URL + " TEXT NOT NULL, " +
                 BlogEntry.COLUMN_PUBDATE + " TEXT NOT NULL, " +
-                BlogEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL);";
+                BlogEntry.COLUMN_ARTICLE + " TEXT NOT NULL, " +
+                BlogEntry.COLUMN_IMAGE + " TEXT);";
 
         sqLiteDatabase.execSQL(SQL_CREATE_BLOG_TABLE);
     }

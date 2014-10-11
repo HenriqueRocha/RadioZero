@@ -26,7 +26,7 @@ public class RadioZeroXmlParser {
     private static final String TAG_TITLE = "title";
     private static final String TAG_LINK = "link";
     private static final String TAG_PUBDATE = "pubDate";
-    private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_CONTENT_ENCODED = "content:encoded";
 
     /**
      * Parse the XML in the given input stream.
@@ -53,7 +53,7 @@ public class RadioZeroXmlParser {
             }
             String name = parser.getName();
             // Starts by looking for the entry tag
-            if (name.equals("channel")) {
+            if (name.equals(TAG_CHANNEL)) {
                 result = readChannel(parser);
             } else {
                 skip(parser);
@@ -87,7 +87,7 @@ public class RadioZeroXmlParser {
         String title = null;
         String link = null;
         String pubDate = null;
-        String description = null;
+        String encoded = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -99,13 +99,13 @@ public class RadioZeroXmlParser {
                 link = readLink(parser);
             } else if (TAG_PUBDATE.equals(name)) {
                 pubDate = readPubDate(parser);
-            } else if (TAG_DESCRIPTION.equals(name)) {
-                description = readDescription(parser);
+            } else if (TAG_CONTENT_ENCODED.equals(name)) {
+                encoded = readContentEncoded(parser);
             } else {
                 skip(parser);
             }
         }
-        return new Item(title, link, pubDate, description);
+        return new Item(title, link, pubDate, encoded);
     }
 
     private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -129,10 +129,10 @@ public class RadioZeroXmlParser {
         return title;
     }
 
-    private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, sNs, TAG_DESCRIPTION);
+    private String readContentEncoded(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, sNs, TAG_CONTENT_ENCODED);
         String title = readText(parser);
-        parser.require(XmlPullParser.END_TAG, sNs, TAG_DESCRIPTION);
+        parser.require(XmlPullParser.END_TAG, sNs, TAG_CONTENT_ENCODED);
         return title;
     }
 
@@ -169,13 +169,13 @@ public class RadioZeroXmlParser {
         public String title;
         public String link;
         public String pubDate;
-        public String description;
+        public String content;
 
-        public Item(String title, String link, String pubDate, String description) {
+        public Item(String title, String link, String pubDate, String content) {
             this.title = title;
             this.link = link;
             this.pubDate = pubDate;
-            this.description = description;
+            this.content = content;
         }
     }
 }

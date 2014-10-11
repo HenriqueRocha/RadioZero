@@ -17,9 +17,10 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.androidappdev.radiozero.BlogEntry;
 import org.androidappdev.radiozero.R;
 import org.androidappdev.radiozero.RadioZeroXmlParser;
-import org.androidappdev.radiozero.data.RadioZeroContract.BlogEntry;
+import org.androidappdev.radiozero.data.RadioZeroContract;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -161,18 +162,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             RadioZeroXmlParser parser = new RadioZeroXmlParser();
             List<RadioZeroXmlParser.Item> items = parser.parse(response.body().byteStream());
             response.body().byteStream().close();
-            Log.d(LOG_TAG, "items: " + items.size());
-            contentProviderClient.delete(BlogEntry.CONTENT_URI, null, null);
+            contentProviderClient.delete(RadioZeroContract.BlogEntry.CONTENT_URI, null, null);
 
             ContentValues[] values = new ContentValues[items.size()];
             int i = 0;
             for (RadioZeroXmlParser.Item item : items) {
-                values[i] = new ContentValues();
-                values[i].put(BlogEntry.COLUMN_TITLE, item.title);
-                values[i].put(BlogEntry.COLUMN_LINK, item.link);
-                values[i].put(BlogEntry.COLUMN_PUBDATE, item.pubDate);
-                values[i].put(BlogEntry.COLUMN_DESCRIPTION, item.description);
-                contentProviderClient.insert(BlogEntry.CONTENT_URI, values[i]);
+                values[i] = new BlogEntry(item.title, item.link, item.pubDate, item.content)
+                        .toContentValues();
+                contentProviderClient.insert(RadioZeroContract.BlogEntry.CONTENT_URI, values[i]);
                 i++;
             }
 

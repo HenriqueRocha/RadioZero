@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +27,9 @@ public class BlogEntryFragment extends Fragment implements LoaderManager.LoaderC
 
     private static final String[] PROJECTION = new String[]{
             BlogEntry.COLUMN_TITLE,
-            BlogEntry.COLUMN_LINK,
+            BlogEntry.COLUMN_URL,
             BlogEntry.COLUMN_PUBDATE,
-            BlogEntry.COLUMN_DESCRIPTION
+            BlogEntry.COLUMN_IMAGE
     };
 
     private long mId;
@@ -70,7 +71,7 @@ public class BlogEntryFragment extends Fragment implements LoaderManager.LoaderC
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_blog_entry, container, false);
         mTitle = (TextView) view.findViewById(R.id.detail_title_textview);
-        mLink = (TextView) view.findViewById(R.id.detail_link_textview);
+//        mLink = (TextView) view.findViewById(R.id.detail_link_textview);
         mPubDate = (TextView) view.findViewById(R.id.detail_pubdate_textview);
         mDescription = (TextView) view.findViewById(R.id.detail_description_textview);
         return view;
@@ -98,12 +99,12 @@ public class BlogEntryFragment extends Fragment implements LoaderManager.LoaderC
         if (cursor.moveToFirst()) {
             int index = cursor.getColumnIndex(BlogEntry.COLUMN_TITLE);
             mTitle.setText(cursor.getString(index));
-            index = cursor.getColumnIndex(BlogEntry.COLUMN_LINK);
-            mLink.setText(cursor.getString(index));
+//            index = cursor.getColumnIndex(BlogEntry.COLUMN_URL);
+//            mLink.setText(cursor.getString(index));
             index = cursor.getColumnIndex(BlogEntry.COLUMN_PUBDATE);
             mPubDate.setText(cursor.getString(index));
-            index = cursor.getColumnIndex(BlogEntry.COLUMN_DESCRIPTION);
-            mDescription.setText(cursor.getString(index));
+            index = cursor.getColumnIndex(BlogEntry.COLUMN_IMAGE);
+            mDescription.setText(Html.fromHtml(cursor.getString(index)));
         }
     }
 

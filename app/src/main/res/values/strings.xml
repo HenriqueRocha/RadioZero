@@ -14,7 +14,8 @@
     <!-- SyncAdapter related -->
     <string name="sync_account_type">radiozero.pt</string>
     <string name="content_authority">org.androidappdev.radiozero</string>
-    <string name="title_activity_blog_entry">BlogEntryActivity</string>
 
     <string name="tagline">Auditory dilatation,\nmind expansion</string>
+    <string name="play">Play</string>
+    <string name="blog">Blog</string>
 </resources>

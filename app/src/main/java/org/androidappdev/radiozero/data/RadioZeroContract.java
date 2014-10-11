@@ -19,22 +19,17 @@ public class RadioZeroContract {
     // the content provider.
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    // Possible paths (appended to base content URI for possible URI's)
-    // For instance, content://com.example.android.sunshine.app/weather/ is a valid path for
-    // looking at weather data. content://com.example.android.sunshine.app/givemeroot/ will fail,
-    // as the ContentProvider hasn't been given any information on what to do with "givemeroot".
-    // At least, let's hope not.  Don't be that dev, reader.  Don't be that dev.
-    public static final String PATH_BLOG = "blog_entries";
+    public static final String PATH_BLOG = "blog";
 
     public interface BlogEntry extends BaseColumns {
         Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BLOG).build();
-
         String TABLE_NAME = "blog_entries";
-        String COLUMN_TITLE = "title";
         String CONTENT_TYPE = "vnd.android.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_BLOG;
-        String COLUMN_LINK = "link";
+        String COLUMN_TITLE = "title";
+        String COLUMN_URL = "url";
         String COLUMN_PUBDATE = "pubDate";
-        String COLUMN_DESCRIPTION = "description";
+        String COLUMN_ARTICLE = "article";
+        String COLUMN_IMAGE = "image";
 
     }
 }
