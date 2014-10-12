@@ -46,34 +46,38 @@ public class AboutFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_about, container, false);
 
-        rootView.findViewById(R.id.facebook_link).setOnClickListener(this);
-        rootView.findViewById(R.id.google_plus_link).setOnClickListener(this);
-        rootView.findViewById(R.id.flickr_link).setOnClickListener(this);
-        rootView.findViewById(R.id.radialx_link).setOnClickListener(this);
+        // TODO Work on this later if I publish the app.
+
+//        rootView.findViewById(R.id.facebook_link).setOnClickListener(this);
+//        rootView.findViewById(R.id.google_plus_link).setOnClickListener(this);
+//        rootView.findViewById(R.id.flickr_link).setOnClickListener(this);
+//        rootView.findViewById(R.id.radialx_link).setOnClickListener(this);
 
         return rootView;
     }
 
+    // TODO Work on this later if I publish the app.
+
     @Override
     public void onClick(View view) {
-        int id = view.getId();
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        switch (id) {
-            case R.id.facebook_link:
-                intent = getOpenInFacebookIntent(
-                        getActivity(), "http://www.facebook.com/radiozero");
-                break;
-            case R.id.google_plus_link:
-                intent.setData(Uri.parse("https://plus.google.com/113155695079240313645"));
-                break;
-            case R.id.flickr_link:
-                intent.setData(Uri.parse("http://flickr.com/radiozero"));
-                break;
-            case R.id.radialx_link:
-                intent.setData(Uri.parse("http://radialx.radiozero.pt"));
-                break;
-        }
-        startActivity(intent);
+//        int id = view.getId();
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        switch (id) {
+//            case R.id.facebook_link:
+//                intent = getOpenInFacebookIntent(
+//                        getActivity(), "http://www.facebook.com/radiozero");
+//                break;
+//            case R.id.google_plus_link:
+//                intent.setData(Uri.parse("https://plus.google.com/113155695079240313645"));
+//                break;
+//            case R.id.flickr_link:
+//                intent.setData(Uri.parse("http://flickr.com/radiozero"));
+//                break;
+//            case R.id.radialx_link:
+//                intent.setData(Uri.parse("http://radialx.radiozero.pt"));
+//                break;
+//        }
+//        startActivity(intent);
     }
 
 }

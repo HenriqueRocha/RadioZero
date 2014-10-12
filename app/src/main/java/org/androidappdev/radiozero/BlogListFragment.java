@@ -158,7 +158,8 @@ public class BlogListFragment extends ListFragment implements
             case R.id.list_item_pubdate_textview:
                 String date = cursor.getString(columnIndex);
                 try {
-                    SimpleDateFormat d = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZZ", Locale.getDefault());
+                    SimpleDateFormat d =
+                            new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZZ", Locale.getDefault());
                     ((TextView) view).setText(
                             DateUtils.getRelativeTimeSpanString(
                                     getActivity(), d.parse(date).getTime()));

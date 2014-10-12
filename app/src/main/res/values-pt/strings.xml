@@ -16,4 +16,8 @@
         A Rádio assume-se como um meio de acesso do indivíduo à radiodifusão. Sendo apologista da liberdade e criatividade, a Rádio dá preferência total ao formato de autor.</string>
 
     <string name="share">Partilhar</string>
+    <string name="state_preparing">A carregar&#8230;</string>
+    <string name="state_playing">A tocar&#8230;</string>
+    <string name="play">Ouvir</string>
+
 </resources>

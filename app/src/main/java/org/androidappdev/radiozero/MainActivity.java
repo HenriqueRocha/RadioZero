@@ -23,6 +23,8 @@ import org.androidappdev.radiozero.sync.SyncAdapter;
 public class MainActivity extends ActionBarActivity
         implements PlayFragment.OnPlayPressedListener, BlogListFragment.Callback, ActionBar.TabListener {
 
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+
     private ViewPager mPager;
     private RadioZeroPagerAdapter mPagerAdapter;
 
@@ -94,7 +96,14 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onPlayPressed(int action) {
-
+        switch (action) {
+            case PlayFragment.PLAYING:
+                startService(RadioZeroService.makeIntent(this, RadioZeroService.ACTION_PLAY));
+                break;
+            case PlayFragment.PAUSED:
+                stopService(new Intent(this, RadioZeroService.class));
+                break;
+        }
     }
 
     @Override

@@ -17,14 +17,18 @@ import android.util.Log;
 import java.io.IOException;
 
 /**
- * Created by hmrocha on 10/5/14.
+ * Service that streams the radio.
+ *
+ * @author <a href="mailto:hmrocha@gmail.com">Henrique Rocha</a>
  */
 public class RadioZeroService extends Service implements MediaPlayer.OnPreparedListener {
-    public static final String ACTION_PLAY = "org.androidappdev.radiozero.action.PLAY";
+    public static final String ACTION_PLAY = "org.androidappdev.radiozero.action.PLAYING";
+    public static final String ACTION_PAUSE = "org.androidappdev.radiozero.action.PAUSED";
     private static final String LOG_TAG = RadioZeroService.class.getSimpleName();
     private static final int STATE_IDLE = 0;
     private int mState = STATE_IDLE;
-    private static final int STATE_PLAYING = 1;
+    private static final int STATE_PREPARING = 1;
+    private static final int STATE_PLAYING = 2;
     /**
      * The ID we use for the notification (the onscreen alert that appears at the notification
      * area at the top of the screen as an icon -- and as text as well if the user expands the
@@ -38,18 +42,58 @@ public class RadioZeroService extends Service implements MediaPlayer.OnPreparedL
      */
     private WifiManager.WifiLock mWifiLock;
 
+    public static Intent makeIntent(Context context, String action) {
+        Intent intent = new Intent(context, RadioZeroService.class);
+        intent.setAction(action);
+        return intent;
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
-        if (action.equals(ACTION_PLAY)) {
-            processPlayRequest();
+        switch (action) {
+            case ACTION_PLAY:
+                processPlayRequest();
+                break;
+            case ACTION_PAUSE:
+                processPauseRequest();
+                break;
         }
 
         return START_NOT_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+        cleanUp();
+        super.onDestroy();
+    }
+
+    private void processPauseRequest() {
+        if (mState == STATE_IDLE) return;
+
+        updateStateInNotification(STATE_PREPARING);
+
+        cleanUp();
+    }
+
+    private void cleanUp() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+            mState = STATE_IDLE;
+        }
+        if (mWifiLock.isHeld()) mWifiLock.release();
+        stopForeground(true);
+        stopSelf();
+    }
+
     private void processPlayRequest() {
         if (mState == STATE_PLAYING) return;
+
+        if (mState == STATE_IDLE) {
+            updateStateInNotification(STATE_PREPARING);
+        }
 
         SharedPreferences prefs =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -74,17 +118,6 @@ public class RadioZeroService extends Service implements MediaPlayer.OnPreparedL
     }
 
     @Override
-    public void onDestroy() {
-        if (mMediaPlayer != null) {
-            mMediaPlayer.release();
-            mMediaPlayer = null;
-        }
-        if (mWifiLock.isHeld()) mWifiLock.release();
-        stopForeground(true);
-        super.onDestroy();
-    }
-
-    @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
@@ -92,22 +125,46 @@ public class RadioZeroService extends Service implements MediaPlayer.OnPreparedL
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         mediaPlayer.start();
+
         mState = STATE_PLAYING;
         mWifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
         mWifiLock.acquire();
-        String songName = "Yo!";
-// assign the song name to songName
-        PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0,
+
+        updateStateInNotification(mState);
+    }
+
+    private void updateStateInNotification(int state) {
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 new Intent(getApplicationContext(), MainActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT);
+
         Notification notification = new Notification();
-        notification.tickerText = "Radio Zero";
+        notification.tickerText = getString(R.string.app_name);
+        // TODO: This should not be a color icon, it should follow the guidelines.
+        // If I actually publish this app I have to learn how to create some icons.
         notification.icon = R.drawable.ic_launcher;
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
-        notification.setLatestEventInfo(getApplicationContext(), "MusicPlayerSample",
-                "Playing: " + songName, pi);
+
+        // TODO: This was taken from the offical docs. Find non deprecated replacement if
+        // I actually get to publish this.
+        notification.setLatestEventInfo(
+                getApplicationContext(),
+                getString(R.string.app_name) /* contentTitle */,
+                getStringForState(state) /* contentText */,
+                pendingIntent);
+
         startForeground(NOTIFICATION_ID, notification);
     }
 
+    private CharSequence getStringForState(int state) {
+        switch (state) {
+            case STATE_PREPARING:
+                return getString(R.string.state_preparing);
+            case STATE_PLAYING:
+                return getString(R.string.state_playing);
+            default:
+                return null; // can't happen
+        }
+    }
 }
