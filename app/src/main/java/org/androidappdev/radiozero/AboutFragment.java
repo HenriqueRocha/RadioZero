@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Fragment that display "About" information like the manifesto and some social network links.
+ *
+ * @author <a href="mailto:hmrocha@gmail.com">Henrique Rocha</a>
  */
 public class AboutFragment extends Fragment implements View.OnClickListener {
 

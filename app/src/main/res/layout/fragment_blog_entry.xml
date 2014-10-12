@@ -1,37 +1,65 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary2"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="org.androidappdev.radiozero.BlogEntryFragment">
+    android:background="@color/primary2">
 
-    <TextView
-        android:id="@+id/detail_title_textview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
-        android:textAppearance="?android:textAppearanceLarge"
-        tools:text="Title" />
+        android:orientation="vertical"
+        tools:context="org.androidappdev.radiozero.BlogEntryFragment">
 
-    <!--<TextView-->
-    <!--android:id="@+id/detail_link_textview"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content" />-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/detail_pubdate_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="1 day ago" />
+            <ImageView
+                android:id="@+id/detail_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                tools:src="@drawable/banner" />
 
-    <TextView
-        android:id="@+id/detail_description_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="Description" />
-</LinearLayout>
+            <TextView
+                android:id="@+id/detail_title_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/detail_imageview"
+                android:background="@color/headline_background"
+                android:fontFamily="sans-serif-condensed"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textColor="@android:color/white"
+                tools:text="Title" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:id="@+id/detail_pubdate_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                tools:text="1 day ago" />
+
+            <TextView
+                android:id="@+id/detail_article_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                tools:text="Description" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

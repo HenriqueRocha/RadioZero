@@ -15,7 +15,11 @@ import android.view.MenuItem;
 
 import org.androidappdev.radiozero.sync.SyncAdapter;
 
-
+/**
+ * Entry point of the app.
+ *
+ * @author <a href="mailto:hmrocha@gmail.com">Henrique Rocha</a>
+ */
 public class MainActivity extends ActionBarActivity
         implements PlayFragment.OnPlayPressedListener, BlogListFragment.Callback, ActionBar.TabListener {
 

@@ -5,7 +5,7 @@ import android.content.ContentValues;
 import org.androidappdev.radiozero.data.RadioZeroContract;
 
 /**
- * Created by hmrocha on 10/11/14.
+ * @author <a href="mailto:hmrocha@gmail.com">Henrique Rocha</a>
  */
 public class BlogEntry {
     private String title;

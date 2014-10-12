@@ -18,4 +18,7 @@
     <string name="tagline">Auditory dilatation,\nmind expansion</string>
     <string name="play">Play</string>
     <string name="blog">Blog</string>
+    <string name="manifesto_text">The Radio is a medium that fosters creative experimentation and the development of art in sound format.\n\nThe radio operates in society through community action content and promotion of cultural activities.\n\nThe radio is assumed as a means of access to the individual broadcaster. Being an apologist of freedom and creativity, Radio gives preference to full copyright format.</string>
+    <string name="manifesto">manifesto zero</string>
+    <string name="share">Share</string>
 </resources>

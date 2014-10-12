@@ -3,6 +3,7 @@ package org.androidappdev.radiozero;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -23,12 +24,16 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Fragment that displays a list of blog entries.
+ *
+ * @author <a href="mailto:hmrocha@gmail.com">Henrique Rocha</a>
  */
 public class BlogListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor>, SimpleCursorAdapter.ViewBinder {
 
     private static final String LOG_TAG = BlogListFragment.class.getSimpleName();
+
+    private static final String LISTVIEW_STATE_KEY = "listview_state";
 
     private final String[] PROJECTION = {
             BlogEntry._ID,
@@ -48,6 +53,7 @@ public class BlogListFragment extends ListFragment implements
     };
     private SimpleCursorAdapter mAdapter;
     private Callback mListener;
+    private Parcelable mListViewState;
 
     public BlogListFragment() {
     }
@@ -65,6 +71,11 @@ public class BlogListFragment extends ListFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(LISTVIEW_STATE_KEY)) {
+            mListViewState = savedInstanceState.getParcelable(LISTVIEW_STATE_KEY);
+        }
+
         getListView().setSelector(R.drawable.radiozero_list_selector_holo_light);
         getListView().setDrawSelectorOnTop(true);
         // Prepare the loader.  Either re-connect with an existing one, or start a new one.
@@ -78,6 +89,15 @@ public class BlogListFragment extends ListFragment implements
         mAdapter.setViewBinder(this);
 //        getActivity().startService(new Intent(RadioZeroService.ACTION_PLAY));
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ListView listView = getListView();
+        if (listView != null) {
+            outState.putParcelable(LISTVIEW_STATE_KEY, listView.onSaveInstanceState());
+        }
     }
 
     @Override
@@ -112,6 +132,10 @@ public class BlogListFragment extends ListFragment implements
 
         if (getListAdapter() == null) {
             setListAdapter(mAdapter);
+        }
+
+        if (mListViewState != null) {
+            getListView().onRestoreInstanceState(mListViewState);
         }
     }
 
