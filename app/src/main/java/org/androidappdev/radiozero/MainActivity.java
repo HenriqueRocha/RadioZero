@@ -21,23 +21,38 @@ import org.androidappdev.radiozero.sync.SyncAdapter;
  * @author <a href="mailto:hmrocha@gmail.com">Henrique Rocha</a>
  */
 public class MainActivity extends ActionBarActivity
-        implements PlayFragment.OnPlayPressedListener, BlogListFragment.Callback, ActionBar.TabListener {
+        implements
+        PlayFragment.OnPlayPressedListener,
+        BlogListFragment.Callback,
+        ActionBar.TabListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private ViewPager mPager;
     private RadioZeroPagerAdapter mPagerAdapter;
+    private boolean mTabletUi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
+        mTabletUi = mPager == null;
+
+        if (mTabletUi) { // We don't use a ViewPager in 10" tablet UI.
+
+        } else {
+            setupPhoneUi();
+        }
+
+        SyncAdapter.initializeSyncAdapter(this);
+    }
+
+    private void setupPhoneUi() {
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         mPagerAdapter = new RadioZeroPagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -60,8 +75,6 @@ public class MainActivity extends ActionBarActivity
                             .setText(mPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
-
-        SyncAdapter.initializeSyncAdapter(this);
     }
 
     @Override
@@ -89,9 +102,17 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onItemSelected(long id) {
-        Intent intent = new Intent(this, BlogEntryActivity.class)
-                .putExtra(BlogEntryActivity.ID_KEY, id);
-        startActivity(intent);
+        if (mTabletUi) {
+            BlogEntryFragment fragment = BlogEntryFragment.newInstance(id);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.blog_entry_container, fragment)
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, BlogEntryActivity.class);
+            intent.putExtra(BlogEntryActivity.ID_KEY, id);
+            startActivity(intent);
+        }
     }
 
     @Override

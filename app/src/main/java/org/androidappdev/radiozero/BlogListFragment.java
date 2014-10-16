@@ -10,7 +10,9 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -69,6 +71,11 @@ public class BlogListFragment extends ListFragment implements
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_blog_list, container, false);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -76,8 +83,6 @@ public class BlogListFragment extends ListFragment implements
             mListViewState = savedInstanceState.getParcelable(LISTVIEW_STATE_KEY);
         }
 
-        getListView().setSelector(R.drawable.radiozero_list_selector_holo_light);
-        getListView().setDrawSelectorOnTop(true);
         // Prepare the loader.  Either re-connect with an existing one, or start a new one.
         mAdapter = new SimpleCursorAdapter(
                 getActivity(),
